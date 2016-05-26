@@ -1,0 +1,22 @@
+{
+    "name": "shtrihstr/wp-varnish",
+    "description": "",
+    "type": "wordpress-muplugin",
+    "keywords": ["wordpress", "plugins", "cache", "varnish"],
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Oleksandr Strikha",
+            "email": "alex@strikha.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.5.0",
+        "composer/installers": "~1.0",
+        "shtrihstr/wp-flush-cache": "*"
+    },
+    "extra": {
+        "installer-name": "varnish"
+    }
+}
