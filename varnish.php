@@ -14,9 +14,14 @@ require_once __DIR__ . '/class-varnish-purge.php';
 
 $GLOBALS['varnish_purge'] = new Varnish_Purge();
 
-if ( function_exists( 'flush_cache_add_button' ) ) {
+add_action( 'muplugins_loaded', function() {
 
-    flush_cache_add_button( __( 'Varnish cache' ), function() {
-        do_action( 'varnish_flush_all' );
-    } );
-}
+    if ( function_exists( 'flush_cache_add_button' ) ) {
+
+        flush_cache_add_button( __( 'Varnish cache' ), function() {
+            do_action( 'varnish_flush_all' );
+        } );
+    }
+} );
+
+

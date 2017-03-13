@@ -12,9 +12,9 @@ backend default {
 sub vcl_recv {
 
     # process purge req from WordPress plugin
-    if (req.method == "PURGE" && req.http.secret == "SECRET KEY") {
+    if (req.method == "POST" && req.url == "/__varnish-purge" && req.http.secret == "SECRET KEY") {
         ban(req.http.regex);
-        return(synth(200, "Purged."));
+        return (synth(200, "Purged."));
     }
 
     # add real ip to X-Forwarded-For
@@ -47,7 +47,6 @@ sub vcl_recv {
 
     # pass req with auth or https
     if (req.http.Authorization || req.http.Https) {
-        set req.http.X-No-Cache = "Authorization";
         return (pass);
     }
 
@@ -100,13 +99,11 @@ sub vcl_backend_response {
 
     if (beresp.status != 200 && beresp.status != 301 && beresp.status != 302 && beresp.status != 404) {
         set beresp.uncacheable = true;
-        set beresp.ttl = 0s;
         return (deliver);
     }
 
-    if (beresp.http.Vary == "*" ||  beresp.http.set-cookie || bereq.http.X-Varnish-No-Cache) {
+    if (beresp.ttl <= 0s || beresp.http.Vary == "*" ||  beresp.http.set-cookie || beresp.http.X-No-Cache || beresp.http.X-Varnish-No-Cache) {
         set beresp.uncacheable = true;
-        set beresp.ttl = 0s;
         return (deliver);
     }
 

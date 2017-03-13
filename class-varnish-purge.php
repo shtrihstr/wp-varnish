@@ -10,15 +10,19 @@ class Varnish_Purge
     protected function _send_purge_request( $regex )
     {
         $request_args = [
+            'method' => 'POST',
             'timeout' => 0.3,
             'blocking' => false,
-            'body' => [
+            'httpversion' => '1.1',
+            'headers' => [
                 'regex' => $regex,
                 'secret' => VARNISH_SECRET,
             ],
         ];
 
-        wp_remote_post( get_home_url(), $request_args );
+        $url = defined( 'VARNISH_URL' ) ? VARNISH_URL : get_home_url( null, '/__varnish-purge' );
+
+        wp_remote_request( $url, $request_args );
     }
 
     protected function _purge( $regex )
